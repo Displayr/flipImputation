@@ -1,0 +1,12 @@
+Package: flipImputation
+Type: Package
+Title: Data frame imputation.
+Version: 0.1.0
+Authors@R: person("Tim", "Bock", email = "tim.bock@numbers.net.au", role = c("aut", "cre"))
+Maintainer: Tim Bock <tim.bock@numbers.net.au>
+Description: Functions for imputing data.
+License: GPL-3
+LazyData: TRUE
+Imports:
+    testthat, flipData, hot.deck, mice, flipU
+RoxygenNote: 5.0.1
