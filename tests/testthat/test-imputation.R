@@ -1,5 +1,5 @@
 context("Imputation")
-data(bank, package = "flipData")
+data(bank, package = "flipExampleData")
 
 dat <- data.frame(a = rep((1:10)/10,2),
                   b = rep(1:10,2),

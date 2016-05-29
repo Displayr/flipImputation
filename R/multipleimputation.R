@@ -19,7 +19,7 @@
 # #
 # # # Multiple imputation.
 #
-# data(bank, package = "flipData")
+# data(bank, package = "flipExampleData")
 # m = 10
 # est.data <- flipU::EstimationData(Overall ~ Fees + Interest + Phone + Branch + Online + ATM, bank, m = 10,
 #                                        missing = "Imputation (replace missing values with estimates)",
