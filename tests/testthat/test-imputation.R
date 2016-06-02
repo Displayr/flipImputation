@@ -35,3 +35,13 @@ test_that("Imputation algorithms",
     si <- Imputation(bank, method = "hot deck")[[1]]
     expect_equal(attr(si, "imputation.method"), "hot decking")
 })
+
+
+test_that("Multiple imputation",
+          {
+              data("bank", package = "flipExampleData")
+              zbank <- bank[1:100, 2:8]
+              est <- Imputation(zbank, Overall ~ Fees + Branch, m = 10, seed = 1233)
+              expect_equal(length(est), 10)
+          })
+
