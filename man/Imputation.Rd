@@ -4,7 +4,7 @@
 \alias{Imputation}
 \title{\code{Imputation}}
 \usage{
-Imputation(data, formula = NULL, method = "try mice", m = 1,
+Imputation(data = NULL, formula = NULL, method = "try mice", m = 1,
   seed = 12321)
 }
 \arguments{
@@ -29,5 +29,7 @@ This is a wrapper for \code{\link{mice}}.
 von Hippel, Paul T. 2007. "Regression With Missing Y's: An
 Improved Strategy for Analyzing Multiply Imputed Data." Sociological Methodology 37:83-117.
 Skyler J. Cranmer and Jeff Gill (2013). We Have to Be Discrete About This: A Non-Parametric Imputation Technique for Missing Categorical Data. British Journal of Political Science, 43, pp 425-449.
+Stef van Buuren and Karin Groothuis-Oudshoorn (2011), "mice: Multivariate
+Imputation by Chained Equations in R", Journal of Statistical Software, 45:3, 1-67.
 }
 
