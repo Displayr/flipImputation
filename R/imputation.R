@@ -38,7 +38,11 @@ Imputation <- function(data = NULL, formula = NULL, method = "try mice", m = 1, 
     }
     if(method != "Hot deck")
     {
-        imputed.data <- try(
+        # CE-437: Integer and numeric columns created by calling unclass() on factors contain levels,
+        # which confuses mice and causes it to crash (and display cryptic warnings).
+        data <- removeLevelsFromNumericData(data)
+
+        imputed.data <- suppressWarnings(try(
             {
                 require("mice")
                 set.seed(seed)
@@ -51,7 +55,7 @@ Imputation <- function(data = NULL, formula = NULL, method = "try mice", m = 1, 
                 }
                 data.sets
             }
-        ,  silent = TRUE)
+        , silent = TRUE))
         if (method == "mice" && .errorInImputation(imputed.data, formula))
             stop("Mice imputation failed.")
     }
@@ -77,4 +81,15 @@ Imputation <- function(data = NULL, formula = NULL, method = "try mice", m = 1, 
         }
     }
     imputed.data
+}
+
+removeLevelsFromNumericData <- function(data)
+{
+    for (nms in names(data))
+    {
+        clss <- class(data[[nms]])
+        if (clss == "integer" ||  clss == "numeric")
+            attr(data[[nms]], "levels") <- NULL
+    }
+    data
 }
