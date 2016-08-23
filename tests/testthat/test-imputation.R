@@ -45,3 +45,13 @@ test_that("Multiple imputation",
               expect_equal(length(est), 10)
           })
 
+test_that("Attributes are retained",
+{
+    data("bank", package = "flipExampleData")
+    zbank <- bank[1:100, 2:8]
+    attr(zbank$Overall, "label") <- "Big dog"
+    est <- Imputation(zbank, Overall ~ Fees + Branch, m = 10, seed = 1233)
+    expect_equal(attr(zbank$Overall, "label"), "Big dog")
+})
+
+
