@@ -79,6 +79,8 @@ Imputation <- function(data = NULL, formula = NULL, method = "try mice", m = 1, 
                 imputed.data[[i]] <- imputed.data[[i]][valid.dependent, ] # Excluding observations with missing values.
             }
         }
+     for (i in names(imputed.data))
+         attr(imputed.data[, i], "label") = attr(data[, i], "label")
     }
     imputed.data
 }
