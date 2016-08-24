@@ -78,8 +78,9 @@ Imputation <- function(data = NULL, formula = NULL, method = "try mice", m = 1, 
                 imputed.data[[i]] <- imputed.data[[i]][valid.dependent, ] # Excluding observations with missing values.
             }
         }
-        imputed.data <- CopyAttributes(data, imputed.data)
     }
+    for (i in 1:m)
+        imputed.data[[i]] <- CopyAttributes(data, imputed.data[[i]])
     imputed.data
 }
 
