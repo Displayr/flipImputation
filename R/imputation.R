@@ -15,8 +15,7 @@
 #' Stef van Buuren and Karin Groothuis-Oudshoorn (2011), "mice: Multivariate
 #' Imputation by Chained Equations in R", Journal of Statistical Software, 45:3, 1-67.
 #' @import mice
-#' @importFrom flipU OutcomeName
-#' @importFrom flipU AnyNA
+#' @importFrom flipU OutcomeName CopyAttributes AnyNA
 #' @import hot.deck
 #' @export
 Imputation <- function(data = NULL, formula = NULL, method = "try mice", m = 1, seed = 12321)
@@ -79,8 +78,7 @@ Imputation <- function(data = NULL, formula = NULL, method = "try mice", m = 1, 
                 imputed.data[[i]] <- imputed.data[[i]][valid.dependent, ] # Excluding observations with missing values.
             }
         }
-     for (i in names(imputed.data))
-         attr(imputed.data[, i], "label") = attr(data[, i], "label")
+        imputed.data <- CopyAttributes(data, imputed.data)
     }
     imputed.data
 }
