@@ -55,3 +55,15 @@ test_that("Attributes are retained",
 })
 
 
+test_that("Errors with missing values",
+{
+    d <- data.frame(y = 1:10, x = 1:10)
+    expect_error(Imputation(d, y ~ x, m = 1, seed = 1233))
+    d$y[2] <- NA
+    expect_error(Imputation(d, y ~ x, m = 1, seed = 1233))
+    d$x[2] <- NA
+    expect_error(Imputation(d, y ~ x, m = 1, seed = 1233))
+    d$x[5] <- NA
+    expect_error(Imputation(d, y ~ x, m = 1, seed = 1233), NA)
+})
+

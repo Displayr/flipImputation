@@ -3,6 +3,7 @@
 export(Imputation)
 import(hot.deck)
 import(mice)
+importFrom(flipU,AllVariablesNames)
 importFrom(flipU,AnyNA)
 importFrom(flipU,CopyAttributes)
 importFrom(flipU,OutcomeName)

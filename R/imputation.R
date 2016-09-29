@@ -15,7 +15,7 @@
 #' Stef van Buuren and Karin Groothuis-Oudshoorn (2011), "mice: Multivariate
 #' Imputation by Chained Equations in R", Journal of Statistical Software, 45:3, 1-67.
 #' @import mice
-#' @importFrom flipU OutcomeName CopyAttributes AnyNA
+#' @importFrom flipU OutcomeName CopyAttributes AnyNA AllVariablesNames
 #' @import hot.deck
 #' @export
 Imputation <- function(data = NULL, formula = NULL, method = "try mice", m = 1, seed = 12321)
@@ -32,8 +32,17 @@ Imputation <- function(data = NULL, formula = NULL, method = "try mice", m = 1, 
     }
     if(!any(is.na(data)))
     {
-        stop("Imputation has been selected, but the data has no missing values, so nothing has been imputed.")
-        return(data)
+        stop("Imputation has been selected, but the data has no missing values, so nothing has been imputed. Change your 'Missing data' selection.")
+    }
+    outcome.name <- if (is.null(formula)) NULL else OutcomeName(formula)
+    if (!is.null(outcome.name))
+    {
+        temp.data <- data[, AllVariablesNames(formula)]
+        temp.data <- data[!is.na(temp.data[, outcome.name]), , drop = FALSE]
+        if(!any(is.na(temp.data)))
+        {
+            stop("Imputation has been selected, but the data has no missing values in the predictors, so nothing has been imputed. Change your 'Missing data' selection.")
+        }
     }
     if(method != "Hot deck")
     {
@@ -69,7 +78,6 @@ Imputation <- function(data = NULL, formula = NULL, method = "try mice", m = 1, 
         stop("Imputation has failed.")
     if (!is.null(formula))
     {
-        outcome.name <- OutcomeName(formula)
         if (!is.null(outcome.name))
         {
             for (i in 1:m)
