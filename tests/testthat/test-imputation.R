@@ -49,9 +49,11 @@ test_that("Attributes are retained",
 {
     data("bank", package = "flipExampleData")
     zbank <- bank[1:100, 2:8]
+    attr(zbank$Fees, "label") <- "THe Fees"
     attr(zbank$Overall, "label") <- "Big dog"
     est <- Imputation(zbank, Overall ~ Fees + Branch, m = 10, seed = 1233)
     expect_equal(attr(est[[1]]$Overall, "label"), "Big dog")
+    expect_equal(attr(est[[1]]$Fees, "label"), "THe Fees")
 })
 
 

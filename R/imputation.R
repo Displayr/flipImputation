@@ -83,12 +83,13 @@ Imputation <- function(data = NULL, formula = NULL, method = "try mice", m = 1, 
             for (i in 1:m)
             {
                 valid.dependent <- !is.na(data[, outcome.name])
-                imputed.data[[i]] <- imputed.data[[i]][valid.dependent, ] # Excluding observations with missing values.
+                imp.data <- imputed.data[[i]][valid.dependent, ] # Excluding observations with missing values.
+                imp.data <- CopyAttributes(imp.data, imputed.data[[i]]) # Copying labels
+                attr(imp.data, "imputation.method") <- attr(imputed.data[[i]], "imputation.method") # Data file attributes
+                imputed.data[[i]] <- imp.data
             }
         }
     }
-    for (i in 1:m)
-        imputed.data[[i]] <- CopyAttributes(data, imputed.data[[i]])
     imputed.data
 }
 
