@@ -9,4 +9,7 @@ License: GPL-3
 LazyData: TRUE
 Imports:
     testthat, flipExampleData, hot.deck, mice, flipU
+Remotes:
+    NumbersInternational/flipU,
+    NumbersInternational/flipExampleData
 RoxygenNote: 5.0.1
