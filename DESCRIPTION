@@ -8,8 +8,10 @@ Description: Functions for imputing data using mice and hot.deck.
 License: GPL-3
 LazyData: TRUE
 Imports:
-    testthat, flipExampleData, hot.deck, mice, flipU
+    hot.deck, mice, flipU
+Suggests:
+    flipExampleData,
+    testthat
 Remotes:
-    NumbersInternational/flipU,
-    NumbersInternational/flipExampleData
+    NumbersInternational/flipU
 RoxygenNote: 5.0.1
