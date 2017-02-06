@@ -69,3 +69,13 @@ test_that("Errors with missing values",
     expect_error(Imputation(d, y ~ x, m = 1, seed = 1233), NA)
 })
 
+test_that("Numeric or integer columns with levels",
+{
+    data("cola", package = "flipExampleData")
+    cola <- cola[1:150,]
+    cola$Q2[1:100] <- NA
+    cola$Q3 <- unclass(cola$Q3)
+    result <- Imputation(cola[c("Q2", "Q3")])[[1]]
+    # CE-437: mice used to crash, such that hot decking was used instead.
+    expect_equal(attr(result, "imputation.method"), "chained equations (predictive mean matching)")
+})
