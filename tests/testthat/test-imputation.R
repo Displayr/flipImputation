@@ -45,3 +45,27 @@ test_that("Multiple imputation",
               expect_equal(length(est), 10)
           })
 
+test_that("Attributes are retained",
+{
+    data("bank", package = "flipExampleData")
+    zbank <- bank[1:100, 2:8]
+    attr(zbank$Fees, "label") <- "THe Fees"
+    attr(zbank$Overall, "label") <- "Big dog"
+    est <- Imputation(zbank, Overall ~ Fees + Branch, m = 10, seed = 1233)
+    expect_equal(attr(est[[1]]$Overall, "label"), "Big dog")
+    expect_equal(attr(est[[1]]$Fees, "label"), "THe Fees")
+})
+
+
+test_that("Errors with missing values",
+{
+    d <- data.frame(y = 1:10, x = 1:10)
+    expect_error(Imputation(d, y ~ x, m = 1, seed = 1233))
+    d$y[2] <- NA
+    expect_error(Imputation(d, y ~ x, m = 1, seed = 1233))
+    d$x[2] <- NA
+    expect_error(Imputation(d, y ~ x, m = 1, seed = 1233))
+    d$x[5] <- NA
+    expect_error(Imputation(d, y ~ x, m = 1, seed = 1233), NA)
+})
+
