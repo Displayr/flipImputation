@@ -4,7 +4,7 @@
 #' @param formula A \code{\link{formula}}. Where the formula contains a dependent variable,
 #' observations with missing values on this variable are deleted after the imputation (von Hippel 2007).
 #' @param method "mice" applies multivariate imputation by chained equations
-#' (predictive mean matching) with the \code{\link[mice]{mice}} package. "hot deck" applies the \code{\link[hot.deck, hot.deck.rdb]{hot.deck}} method.
+#' (predictive mean matching) with the \code{\link[mice]{mice}} package. "hot deck" applies the \code{\link[hot.deck:hot.deck]{hot.deck}} method.
 #' The default setting is "try mice", which first applies the \code{\link[mice]{mice}} method and,if an error
 #' occurs, falls back to \code{\link[hot.deck]{hot.deck}}.
 #' @param m Number of imputation samples.
@@ -52,6 +52,11 @@ Imputation <- function(data = NULL, formula = NULL, method = "try mice", m = 1, 
 
         imputed.data <- suppressWarnings(try(
             {
+                # Require is used instead of Depends because using Depends
+                # implies that all downstream packages must also use Depends.
+                # This can substantially increase the load time
+                # as well as risk of conflicting names when the hierachy of
+                # dependencies is very deep
                 require("mice")
                 set.seed(seed)
                 mice.setup <- mice(data, m = m, seed = seed, printFlag = FALSE)
