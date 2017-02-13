@@ -13,5 +13,5 @@ Suggests:
     flipExampleData,
     testthat
 Remotes:
-    NumbersInternational/flipU
+    Displayr/flipU
 RoxygenNote: 5.0.1
