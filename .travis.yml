@@ -13,7 +13,6 @@ before_install:
   - sudo apt-get install -y libgdal-dev libproj-dev python-protobuf libprotoc-dev libprotobuf-dev libv8-dev librsvg2-dev
 
 r_packages:
-  - roxygen2
   - covr
 
 r_github_packages:
@@ -38,4 +37,5 @@ notifications:
 # by calling R functions so they can be updated in this package without
 # committing a new change to .travis.yml in each repository
 after_success: 
-  - travis_wait Rscript -e "require(travisCI); NotifyWarnings(); TriggerDownstreamBuilds(); CheckCoverage()"
+  - Rscript -e "require(travisCI); NotifyWarnings(); TriggerDownstreamBuilds(); CheckCoverage()"
+  - Rscript -e "require(travisCI); CheckCoverage()"
