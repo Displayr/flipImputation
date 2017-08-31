@@ -38,5 +38,4 @@ notifications:
 # by calling R functions so they can be updated in this package without
 # committing a new change to .travis.yml in each repository
 after_success: 
-  - Rscript -e "require(travisCI); NotifyWarnings(); TriggerDownstreamBuilds(); CheckCoverage()"
-  - Rscript -e "require(travisCI); CheckCoverage()"
+  - travis_wait Rscript -e "require(travisCI); NotifyWarnings(); TriggerDownstreamBuilds(); CheckCoverage()"
