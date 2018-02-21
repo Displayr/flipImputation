@@ -32,4 +32,3 @@ Skyler J. Cranmer and Jeff Gill (2013). We Have to Be Discrete About This: A Non
 Stef van Buuren and Karin Groothuis-Oudshoorn (2011), "mice: Multivariate
 Imputation by Chained Equations in R", Journal of Statistical Software, 45:3, 1-67.
 }
-

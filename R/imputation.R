@@ -14,9 +14,9 @@
 #' Skyler J. Cranmer and Jeff Gill (2013). We Have to Be Discrete About This: A Non-Parametric Imputation Technique for Missing Categorical Data. British Journal of Political Science, 43, pp 425-449.
 #' Stef van Buuren and Karin Groothuis-Oudshoorn (2011), "mice: Multivariate
 #' Imputation by Chained Equations in R", Journal of Statistical Software, 45:3, 1-67.
-#' @import mice
+#' @importFrom mice mice
 #' @importFrom flipU OutcomeName CopyAttributes AnyNA AllVariablesNames
-#' @import hot.deck
+#' @importFrom hot.deck hot.deck
 #' @export
 Imputation <- function(data = NULL, formula = NULL, method = "try mice", m = 1, seed = 12321)
 {
@@ -37,7 +37,7 @@ Imputation <- function(data = NULL, formula = NULL, method = "try mice", m = 1, 
     outcome.name <- if (is.null(formula)) NULL else OutcomeName(formula)
     if (!is.null(outcome.name))
     {
-        temp.data <- data[, AllVariablesNames(formula)]
+        temp.data <- data[, AllVariablesNames(formula, data = data)]
         temp.data <- data[!is.na(temp.data[, outcome.name]), , drop = FALSE]
         if(!any(is.na(temp.data)))
         {
