@@ -63,7 +63,7 @@ Imputation <- function(data = NULL, formula = NULL, method = "try mice", m = 1, 
                 data.sets <- vector("list", m)
                 for (i in 1:m)
                 {
-                    data.sets[[i]] = complete(mice.setup, action = i)
+                    data.sets[[i]] <- CopyAttributes(complete(mice.setup, action = i), data)
                     attr(data.sets[[i]], "imputation.method") <- "chained equations (predictive mean matching)"
                 }
                 data.sets
