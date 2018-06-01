@@ -1006,3 +1006,11 @@ test_that("Correct dimensions",
     expect_equal(rownames(res2), rownames(dat2))
     expect_equal(colnames(res2), colnames(dat2))
 })
+
+
+test_that("Rownames preserved",
+{
+    sb <- !is.na(bank$ID) & bank$ID > 300
+    est.dat <- Imputation(bank[sb,], Overall~Fees+Interest, m = 1, seed = 0)[[1]]
+    expect_equal(sum(rownames(est.dat) %in% rownames(bank[sb,])), 181)
+})
