@@ -8,7 +8,9 @@ Description: Functions for imputing data using mice and hot.deck.
 License: GPL-3
 LazyData: TRUE
 Imports:
-    hot.deck, mice, flipU
+    hot.deck,
+    mice,
+    flipU
 Suggests:
     flipExampleData,
     testthat
