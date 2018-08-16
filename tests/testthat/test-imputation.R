@@ -1017,3 +1017,11 @@ test_that("Rownames preserved",
     est.dat <- Imputation(bank[sb,], Overall~Fees+Interest, m = 1, seed = 0)[[1]]
     expect_equal(sum(rownames(est.dat) %in% rownames(bank[sb,])), 181)
 })
+
+test_that("No imputation needed",
+{
+    expect_warning(z <- Imputation(seq(100)),
+                   "Imputation has been selected, but the data has no missing values, so nothing has been imputed.")
+    expect_equal(z[[1]], seq(100))
+})
+
