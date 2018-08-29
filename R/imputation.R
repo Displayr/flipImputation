@@ -31,10 +31,8 @@ Imputation <- function(data = NULL, formula = NULL, method = "try mice", m = 1, 
         FALSE
     }
     if(!any(is.na(data)))
-    {
-        warning("Imputation has been selected, but the data has no missing values, so nothing has been imputed.")
         return(list(data))
-    }
+
     outcome.name <- if (is.null(formula)) NULL else OutcomeName(formula)
     if (!is.null(outcome.name))
     {
