@@ -31,7 +31,7 @@ Imputation <- function(data = NULL, formula = NULL, method = "try mice", m = 1, 
         FALSE
     }
     if(!any(is.na(data)))
-        return(list(data))
+        return(lapply(seq(m), function(x) data))
 
     outcome.name <- if (is.null(formula)) NULL else OutcomeName(formula)
     if (!is.null(outcome.name))
@@ -41,7 +41,7 @@ Imputation <- function(data = NULL, formula = NULL, method = "try mice", m = 1, 
         if(!any(is.na(temp.data)))
         {
             warning("Imputation has been selected, but the data has no missing values in the predictors, so nothing has been imputed.")
-            return(list(data))
+            return(lapply(seq(m), function(x) data))
         }
     }
     if(method != "Hot deck")
