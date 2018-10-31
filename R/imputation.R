@@ -41,7 +41,8 @@ Imputation <- function(data = NULL, formula = NULL, method = "try mice", m = 1, 
         if(!any(is.na(temp.data)))
         {
             warning("Imputation has been selected, but the data has no missing values in the predictors, so nothing has been imputed.")
-            return(lapply(seq(m), function(x) data))
+            temp.data <- CopyAttributes(temp.data, data)
+            return(lapply(seq(m), function(x) temp.data))
         }
     }
     if(method != "Hot deck")
