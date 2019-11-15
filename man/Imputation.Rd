@@ -4,8 +4,13 @@
 \alias{Imputation}
 \title{\code{Imputation}}
 \usage{
-Imputation(data = NULL, formula = NULL, method = "try mice", m = 1,
-  seed = 12321)
+Imputation(
+  data = NULL,
+  formula = NULL,
+  method = "try mice",
+  m = 1,
+  seed = 12321
+)
 }
 \arguments{
 \item{data}{A \code{\link{data.frame}}.}

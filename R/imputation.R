@@ -30,6 +30,14 @@ Imputation <- function(data = NULL, formula = NULL, method = "try mice", m = 1, 
         }
         FALSE
     }
+    missing.variables <- apply(data, 2, function(x) all(is.na(x)))
+    if(any(missing.variables))
+    {
+        missing.variable.names <- paste0(names(data[missing.variables]), collapse = ", ")
+        warning("Data has variable(s) that are entirely missing values (all observed values of the variable are missing). ",
+                "These variable(s) have been removed from the analysis (", missing.variable.names, ").")
+        data <- data[, !missing.variables]
+    }
     if(!any(is.na(data)))
         return(lapply(seq(m), function(x) data))
 
@@ -54,12 +62,6 @@ Imputation <- function(data = NULL, formula = NULL, method = "try mice", m = 1, 
         dat.colnames <- NULL
         imputed.data <- suppressWarnings(try(
             {
-                # Require is used instead of Depends because using Depends
-                # implies that all downstream packages must also use Depends.
-                # This can substantially increase the load time
-                # as well as risk of conflicting names when the hierachy of
-                # dependencies is very deep
-                require("mice")
                 set.seed(seed)
                 dat.colnames <- colnames(data)
                 colnames(data) <- paste0("A", 1:ncol(data)) # need to replace names to avoid errors in mice v3.0.0

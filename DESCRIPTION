@@ -1,19 +1,17 @@
 Package: flipImputation
 Type: Package
 Title: Data frame imputation
-Version: 1.0.0
+Version: 1.0.1
 Author: Displayr <opensource@displayr.com>
 Maintainer: Displayr <opensource@displayr.com>
 Description: Functions for imputing data using mice and hot.deck.
 License: GPL-3
 LazyData: TRUE
-Imports:
-    hot.deck,
-    mice,
-    flipU
-Suggests:
-    flipExampleData,
-    testthat
-Remotes:
-    Displayr/flipU
-RoxygenNote: 6.1.0
+Imports: hot.deck,
+ mice,
+ flipU
+Suggests: flipExampleData,
+ testthat
+Remotes: Displayr/flipU
+Encoding: UTF-8
+RoxygenNote: 7.0.0
