@@ -9,7 +9,7 @@ License: GPL-3
 LazyData: TRUE
 Imports:
     hot.deck,
-    mice,
+    mice (>= 3.14.0),
     flipU
 Suggests:
     flipExampleData,
