@@ -13,7 +13,10 @@ Imports:
     flipU
 Suggests:
     flipExampleData,
-    testthat
+    testthat,
+    mice313
 Remotes:
     Displayr/flipU
+    Displayr/flipExampleData
+    Displayr/mice
 RoxygenNote: 7.1.2
