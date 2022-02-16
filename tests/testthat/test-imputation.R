@@ -1023,3 +1023,18 @@ test_that("No imputation needed",
     expect_equal(z[[1]], seq(100))
 })
 
+test_that("Can change mice version used via use.mice.v3.13 arg",
+{
+    skip_if_not_installed("mice", minimum_version = "3.14.0")
+    skip_if_not_installed("mice313", minimum_version = "3.13.0")
+    skip_if_not(packageVersion("mice313") < packageVersion("mice"))
+    res.null <- Imputation(dat, use.mice.v3.13 = NULL)[[1]]
+    res.313 <- Imputation(dat, use.mice.v3.13 = TRUE)[[1]]
+    res.314 <- Imputation(dat, use.mice.v3.13 = FALSE)[[1]]
+    if (flipU::IsRServer())
+    {
+        expect_equal(res.null, res.313)
+    }else{
+        expect_equal(res.null, res.314)
+    }
+})

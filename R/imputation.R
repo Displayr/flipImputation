@@ -1,24 +1,47 @@
 #' \code{Imputation}
 #' @description This is a wrapper for \code{\link{mice}}.
 #' @param data A \code{\link{data.frame}}.
-#' @param formula A \code{\link{formula}}. Where the formula contains a dependent variable,
-#' observations with missing values on this variable are deleted after the imputation (von Hippel 2007).
-#' @param method "mice" applies multivariate imputation by chained equations
-#' (predictive mean matching) with the \code{\link[mice]{mice}} package. "hot deck" applies the \code{\link[hot.deck:hot.deck]{hot.deck}} method.
-#' The default setting is "try mice", which first applies the \code{\link[mice]{mice}} method and,if an error
-#' occurs, falls back to \code{\link[hot.deck]{hot.deck}}.
+#' @param formula A \code{\link{formula}}. Where the formula contains
+#'     a dependent variable, observations with missing values on this
+#'     variable are deleted after the imputation (von Hippel 2007).
+#' @param method "mice" applies multivariate imputation by chained
+#'     equations (predictive mean matching) with the
+#'     \code{\link[mice]{mice}} package. "hot deck" applies the
+#'     \code{\link[hot.deck:hot.deck]{hot.deck}} method.  The default
+#'     setting is "try mice", which first applies the
+#'     \code{\link[mice]{mice}} method and,if an error occurs, falls
+#'     back to \code{\link[hot.deck]{hot.deck}}.
 #' @param m Number of imputation samples.
 #' @param seed Seed used in random number generation.
-#' @references von Hippel, Paul T. 2007. "Regression With Missing Y's: An
-#' Improved Strategy for Analyzing Multiply Imputed Data." Sociological Methodology 37:83-117.
-#' Skyler J. Cranmer and Jeff Gill (2013). We Have to Be Discrete About This: A Non-Parametric Imputation Technique for Missing Categorical Data. British Journal of Political Science, 43, pp 425-449.
-#' Stef van Buuren and Karin Groothuis-Oudshoorn (2011), "mice: Multivariate
-#' Imputation by Chained Equations in R", Journal of Statistical Software, 45:3, 1-67.
+#' @param use.mice.v3.13 Should v3.13.0 of the mice package be used
+#'     for reproducibility of old results? See the Notes section. The
+#'     default value of \code{NULL} will use the old version of mice
+#'     when the code is run in Displayr and otherwise use the current
+#'     installed version of \code{mice}. If \code{TRUE}, it is assumed
+#'     that mice v3.13 is installed on the system as a package named
+#'     \code{"mice314"}.
+#' @references von Hippel, Paul
+#'     T. 2007. "Regression With Missing Y's: An Improved Strategy for Analyzing Multiply Imputed Data."
+#'     Sociological Methodology 37:83-117.  Skyler J. Cranmer and Jeff
+#'     Gill (2013). We Have to Be Discrete About This: A
+#'     Non-Parametric Imputation Technique for Missing Categorical
+#'     Data. British Journal of Political Science, 43, pp 425-449.
+#'     Stef van Buuren and Karin Groothuis-Oudshoorn (2011),
+#'     "mice: Multivariate Imputation by Chained Equations in R",
+#'     Journal of Statistical Software, 45:3, 1-67.
+#' @note The code uses the mice package which in v3.14.0 changed how
+#'     the random number seed is set within the package. This can
+#'     cause scripts using this function with mice <v3.14.0 to give
+#'     slightly different results than when using mice >=v3.14.0. To
+#'     ensure reproducibility of older results, set
+#'     \code{use.mice.v3.13} to \code{TRUE}.
 #' @importFrom mice mice complete
-#' @importFrom flipU OutcomeName CopyAttributes AnyNA AllVariablesNames
+#' @importFrom flipU OutcomeName CopyAttributes AnyNA
+#'     AllVariablesNames IsRServer
 #' @importFrom hot.deck hot.deck
 #' @export
-Imputation <- function(data = NULL, formula = NULL, method = "try mice", m = 1, seed = 12321)
+Imputation <- function(data = NULL, formula = NULL, method = "try mice", m = 1, seed = 12321,
+                       use.mice.v3.13 = NULL)
 {
     .errorInImputation <- function(imputed.data, formula)
     {
@@ -59,7 +82,14 @@ Imputation <- function(data = NULL, formula = NULL, method = "try mice", m = 1, 
                 # This can substantially increase the load time
                 # as well as risk of conflicting names when the hierachy of
                 # dependencies is very deep
-                require("mice")
+                if (!isFALSE(use.mice.v3.13))
+                {
+                    if (is.null(use.mice.v3.13) && !flipU::IsRServer())
+                        require("mice")
+                    else
+                        stopifnot("Could not find installation of mice v3.13.0 named mice313" = require("mice313"))
+                }else
+                    require("mice")
                 set.seed(seed)
                 dat.colnames <- colnames(data)
                 colnames(data) <- paste0("A", 1:ncol(data)) # need to replace names to avoid errors in mice v3.0.0

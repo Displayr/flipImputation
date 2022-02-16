@@ -4,31 +4,61 @@
 \alias{Imputation}
 \title{\code{Imputation}}
 \usage{
-Imputation(data = NULL, formula = NULL, method = "try mice", m = 1,
-  seed = 12321)
+Imputation(
+  data = NULL,
+  formula = NULL,
+  method = "try mice",
+  m = 1,
+  seed = 12321,
+  use.mice.v3.13 = NULL
+)
 }
 \arguments{
 \item{data}{A \code{\link{data.frame}}.}
 
-\item{formula}{A \code{\link{formula}}. Where the formula contains a dependent variable,
-observations with missing values on this variable are deleted after the imputation (von Hippel 2007).}
+\item{formula}{A \code{\link{formula}}. Where the formula contains
+a dependent variable, observations with missing values on this
+variable are deleted after the imputation (von Hippel 2007).}
 
-\item{method}{"mice" applies multivariate imputation by chained equations
-(predictive mean matching) with the \code{\link[mice]{mice}} package. "hot deck" applies the \code{\link[hot.deck:hot.deck]{hot.deck}} method.
-The default setting is "try mice", which first applies the \code{\link[mice]{mice}} method and,if an error
-occurs, falls back to \code{\link[hot.deck]{hot.deck}}.}
+\item{method}{"mice" applies multivariate imputation by chained
+equations (predictive mean matching) with the
+\code{\link[mice]{mice}} package. "hot deck" applies the
+\code{\link[hot.deck:hot.deck]{hot.deck}} method.  The default
+setting is "try mice", which first applies the
+\code{\link[mice]{mice}} method and,if an error occurs, falls
+back to \code{\link[hot.deck]{hot.deck}}.}
 
 \item{m}{Number of imputation samples.}
 
 \item{seed}{Seed used in random number generation.}
+
+\item{use.mice.v3.13}{Should v3.13.0 of the mice package be used
+for reproducibility of old results? See the Notes section. The
+default value of \code{NULL} will use the old version of mice
+when the code is run in Displayr and otherwise use the current
+installed version of \code{mice}. If \code{TRUE}, it is assumed
+that mice v3.13 is installed on the system as a package named
+\code{"mice314"}.}
 }
 \description{
 This is a wrapper for \code{\link{mice}}.
 }
+\note{
+The code uses the mice package which in v3.14.0 changed how
+    the random number seed is set within the package. This can
+    cause scripts using this function with mice <v3.14.0 to give
+    slightly different results than when using mice >=v3.14.0. To
+    ensure reproducibility of older results, set
+    \code{use.mice.v3.13} to \code{TRUE}.
+}
 \references{
-von Hippel, Paul T. 2007. "Regression With Missing Y's: An
-Improved Strategy for Analyzing Multiply Imputed Data." Sociological Methodology 37:83-117.
-Skyler J. Cranmer and Jeff Gill (2013). We Have to Be Discrete About This: A Non-Parametric Imputation Technique for Missing Categorical Data. British Journal of Political Science, 43, pp 425-449.
-Stef van Buuren and Karin Groothuis-Oudshoorn (2011), "mice: Multivariate
-Imputation by Chained Equations in R", Journal of Statistical Software, 45:3, 1-67.
+von Hippel, Paul
+    T. 2007. "Regression With Missing Y's: An Improved Strategy for Analyzing Multiply Imputed Data."
+    Sociological Methodology 37:83-117.  Skyler J. Cranmer and Jeff
+    Gill (2013). We Have to Be Discrete About This: A
+    Non-Parametric Imputation Technique for Missing Categorical
+    Data. British Journal of Political Science, 43, pp 425-449.
+    Stef van Buuren and Karin Groothuis-Oudshoorn (2011),
+    "mice: Multivariate Imputation by Chained Equations in R",
+    Journal of Statistical Software, 45:3, 1-67.
 }
