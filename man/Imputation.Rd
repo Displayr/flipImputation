@@ -4,8 +4,13 @@
 \alias{Imputation}
 \title{\code{Imputation}}
 \usage{
-Imputation(data = NULL, formula = NULL, method = "try mice", m = 1,
-  seed = 12321)
+Imputation(
+  data = NULL,
+  formula = NULL,
+  method = "try mice",
+  m = 1,
+  seed = 12321
+)
 }
 \arguments{
 \item{data}{A \code{\link{data.frame}}.}
@@ -24,6 +29,11 @@ occurs, falls back to \code{\link[hot.deck]{hot.deck}}.}
 }
 \description{
 This is a wrapper for \code{\link{mice}}.
+}
+\details{
+Variables with class \code{"POSIXct"} are converted to numeric and
+scaled prior to imputation. Variables with class \code{"character"} are converted
+to factor prior to imputation with blank (0-character) entries considered missing.
 }
 \references{
 von Hippel, Paul T. 2007. "Regression With Missing Y's: An
