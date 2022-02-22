@@ -1023,3 +1023,29 @@ test_that("No imputation needed",
     expect_equal(z[[1]], seq(100))
 })
 
+test_that("Imputation with a single variable",
+{
+    num <- 1:100
+    num[1:3] <- NA
+    fac <- as.factor(sample(3, 100, replace = TRUE))
+    is.na(fac) <- 3:5
+
+    out <- Imputation(data.frame(x = num), method = "mice", m = 2)
+    expect_false(anyNA(out[[2L]]))
+    ## mice samples existing values to get imputed values
+    expect_equal(sort(na.omit(unique(num))[]),
+                 sort(unique(out[[1]][, 1])))
+
+    out <- Imputation(data.frame(x = fac), method = "mice", m = 2)
+    expect_false(anyNA(out[[2L]]))
+    ## mice samples existing values to get imputed values
+    expect_equal(sort(na.omit(unique(fac))[]),
+                 sort(unique(out[[1]][, 1])))
+
+
+    out <- Imputation(data.frame(x = num), method = "hot deck", m = 1)
+    expect_false(anyNA(out[[1L]]))
+
+    out <- Imputation(data.frame(x = fac), method = "hot deck", m = 1)
+    expect_false(anyNA(out[[1L]]))
+})

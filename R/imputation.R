@@ -33,6 +33,8 @@ Imputation <- function(data = NULL, formula = NULL, method = "try mice", m = 1, 
     if(!any(is.na(data)))
         return(lapply(seq(m), function(x) data))
 
+    single.var <- NCOL(data) == 1L
+
     outcome.name <- if (is.null(formula)) NULL else OutcomeName(formula)
     if (!is.null(outcome.name))
     {
@@ -63,13 +65,22 @@ Imputation <- function(data = NULL, formula = NULL, method = "try mice", m = 1, 
                 set.seed(seed)
                 dat.colnames <- colnames(data)
                 colnames(data) <- paste0("A", 1:ncol(data)) # need to replace names to avoid errors in mice v3.0.0
-                mice.setup <- mice(data, m = m, seed = seed, printFlag = FALSE)
+                mice.setup <- if (single.var)
+                                  mice(cbind(data, jrhtr46__ = 1), m = m, seed = seed,
+                                        method = c("sample", ""), printFlag = FALSE)
+                              else mice(data, m = m, seed = seed, printFlag = FALSE)
                 data.sets <- vector("list", m)
                 for (i in 1:m)
                 {
-                    data.sets[[i]] <- CopyAttributes(complete(mice.setup, action = i), data, attr.to.not.copy = NULL)
-                    attr(data.sets[[i]], "imputation.method") <- "chained equations (predictive mean matching)"
-                    colnames(data.sets[[i]]) <- dat.colnames
+                    dat.i <- if (single.var)
+                                 CopyAttributes(complete(mice.setup,
+                                                         action = i)[, 1, drop = FALSE], data)
+                             else
+                                 CopyAttributes(complete(mice.setup, action = i), data,
+                                       attr.to.not.copy = NULL)
+                    attr(dat.i, "imputation.method") <- "chained equations (predictive mean matching)"
+                    colnames(dat.i) <- dat.colnames
+                    data.sets[[i]] <- dat.i
                 }
                 colnames(data) <- dat.colnames
                 data.sets
@@ -78,14 +89,22 @@ Imputation <- function(data = NULL, formula = NULL, method = "try mice", m = 1, 
         if (method == "mice" && .errorInImputation(imputed.data, formula))
             stop("Mice imputation failed.")
     }
-    if(method != "mice" && (method == "hot deck" || .errorInImputation(imputed.data, formula)))
+    if (method != "mice" && (method == "hot deck" || .errorInImputation(imputed.data, formula)))
     {
         set.seed(seed)
         if (!is.null(dat.colnames))
             colnames(data) <- dat.colnames
-        imputed.data <- suppressWarnings(hot.deck(data, m = m)$data)
+        imputed.data <- if (single.var)
+                            suppressWarnings(hot.deck(cbind(data, xytr745___ = 1L),
+                                                      m = m)$data)
+                        else
+                            suppressWarnings(hot.deck(data, m = m)$data)
         for (i in 1:m)
+        {
             attr(imputed.data[[i]], "imputation.method") <- "hot decking"
+            if (single.var)
+                imputed.data[[i]] <- imputed.data[[i]][, 1, drop = FALSE]
+        }
     }
     if (.errorInImputation(imputed.data, formula))
         stop("Imputation has failed.")
