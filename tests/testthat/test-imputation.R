@@ -1049,3 +1049,94 @@ test_that("Imputation with a single variable",
     out <- Imputation(data.frame(x = fac), method = "hot deck", m = 2)
     expect_false(anyNA(out[[1L]]))
 })
+
+test_that("Imputation works with date variables",
+{
+    dat.var <- structure(c(1504742400, 1481760000, 1435795200, 1477526400, 1497484800,
+    1456358400, 1482364800, 1438819200, 1449100800, 1437004800, 1481760000,
+    1513209600, 1493856000, 1462665600, 1439424000, 1446076800, 1444262400,
+    1464825600, 1494460800, 1485993600, 1478131200, 1449705600, 1463616000,
+    1483574400, 1461801600, 1461801600, 1484784000, 1501113600, 1495065600,
+    1479945600, 1446681600, 1501113600, 1457568000, 1483574400, 1498089600,
+    1476921600, 1437609600, 1447286400, 1453334400, 1469664000, 1487808000,
+    1504742400, 1449100800, 1506556800, 1437609600, 1452124800, 1442448000,
+    1449100800, 1446681600, 1487203200, 1476921600, 1510185600, 1508371200,
+    1437004800, 1447891200, 1481760000, 1442448000, 1458172800, 1485993600,
+    1440028800, 1437004800, 1438819200, 1467849600, 1455753600, 1457568000,
+    1443657600, 1500508800, 1500508800, 1481155200, 1492646400, 1451520000,
+    1508976000, 1454544000, 1476316800, 1441238400, 1480550400, 1489017600,
+    1447891200, 1458172800, 1446076800, 1500508800, 1496880000, 1444867200,
+    1487203200, 1450915200, 1496880000, 1473292800, 1502928000, 1452729600,
+    1496275200, 1496275200, 1448496000, 1440633600, 1452124800, 1455753600,
+    1446681600, 1506556800, 1458777600, 1487808000, 1440028800), class = c("POSIXct",
+    "POSIXt", "QDate"), QDate = structure(c(27L, 18L, 1L, 16L, 24L,
+    8L, 18L, 2L, 6L, 1L, 18L, 30L, 23L, 11L, 2L, 4L, 4L, 12L, 23L,
+    20L, 17L, 6L, 11L, 19L, 10L, 10L, 19L, 25L, 23L, 17L, 5L, 25L,
+    9L, 19L, 24L, 16L, 1L, 5L, 7L, 13L, 20L, 27L, 6L, 27L, 1L, 7L,
+    3L, 6L, 5L, 20L, 16L, 29L, 28L, 1L, 5L, 18L, 3L, 9L, 20L, 2L,
+    1L, 2L, 13L, 8L, 9L, 4L, 25L, 25L, 18L, 22L, 6L, 28L, 8L, 16L,
+    3L, 18L, 21L, 5L, 9L, 4L, 25L, 24L, 4L, 20L, 6L, 24L, 15L, 26L,
+    7L, 24L, 24L, 5L, 2L, 7L, 8L, 5L, 27L, 9L, 20L, 2L), class = c("ordered",
+    "factor"), .Label = c("July 2015", "August 2015", "September 2015",
+    "October 2015", "November 2015", "December 2015", "January 2016",
+    "February 2016", "March 2016", "April 2016", "May 2016", "June 2016",
+    "July 2016", "August 2016", "September 2016", "October 2016",
+    "November 2016", "December 2016", "January 2017", "February 2017",
+    "March 2017", "April 2017", "May 2017", "June 2017", "July 2017",
+    "August 2017", "September 2017", "October 2017", "November 2017",
+    "December 2017")), questiontype = "Date", dataset = "burger_subset",
+    codeframe = list(Date = 0L), name = "date", label = "Date", question = "Date")
+
+    set.seed(808)
+    dat <- data.frame(date = dat.var, x = as.factor(sample(3, length(dat.var), TRUE)),
+                      y = rnorm(length(dat.var)))
+    is.na(dat$date) <- c(2, 4, 6)
+    is.na(dat$x) <- 1:3
+    is.na(dat$y) <- 9:10
+    out <- Imputation(dat, m = 2)
+    expect_false(anyNA(out[[1]]))
+    expect_equal(colnames(out[[2]]), colnames(dat))
+    expect_is(out[[1]][, 1], "QDate")
+
+    out <- Imputation(dat, method = "hot deck")[[1L]]
+    expect_false(anyNA(out))
+    expect_equal(colnames(out), colnames(dat))
+    expect_is(out[, 1], "QDate")
+})
+
+test_that("Imputation still works if duplicate factor levels present",
+{
+    set.seed(333)
+    dat <- data.frame(x = rnorm(50), y = rnorm(50))
+    dat$z <- structure(c(4L, 2L, 2L, 2L, 3L, 2L, 2L, 3L, 2L, 1L, 3L, 1L, 1L,
+        3L, 1L, 3L, 1L, 1L, 4L, 3L, 4L, 1L, 1L, 4L, 2L, 4L, 2L, 2L, 3L,
+        2L, 1L, 1L, 1L, 2L, 2L, 3L, 4L, 2L, 2L, 1L, 2L, 1L, 3L, 4L, 2L,
+        1L, 1L, 1L, 1L, 2L), .Label = c("A", "B", "C", "A"), class = "factor")
+    is.na(dat) <- cbind(1:6, rep(1:3, each = 2))
+    out <- Imputation(dat)[[1L]]
+    expect_false(anyNA(out))
+    expect_equal(levels(out$z), levels(dat$z))
+})
+
+test_that("Imputation still works if duplicate factor levels present",
+{
+    set.seed(3335)
+    dat <- data.frame(x = rnorm(50), y = runif(50))
+    dat$z <- sample(c("", letters[1:4]), 50, TRUE)
+    is.na(dat) <- cbind(6:1, rep(1:3, each = 2))
+    out <- Imputation(dat, m = 2)[[2L]]
+    expect_false(anyNA(out))
+    expect_is(out$z, "character")
+    expect_equal(sort(unique(out$z)), letters[1:4])  # no ""
+})
+
+test_that("Method hot deck imputes all NA rows",
+{
+    set.seed(234)
+    dat <- data.frame(x = runif(100, -1, 1), y = rnorm(100))
+    dat[5:6, ] <- NA
+    dat[7, 1] <- NA
+    out <- Imputation(dat, method = "hot deck")[[1L]]
+    expect_false(anyNA(out))
+    expect_equal(dim(out), dim(dat))
+})
