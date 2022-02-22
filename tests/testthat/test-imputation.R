@@ -1036,7 +1036,7 @@ test_that("Imputation with a single variable",
     expect_equal(sort(na.omit(unique(num))[]),
                  sort(unique(out[[1]][, 1])))
 
-    out <- Imputation(data.frame(x = fac), method = "mice", m = 2)
+    out <- Imputation(data.frame(x = fac), method = "mice", m = 1)
     expect_false(anyNA(out[[2L]]))
     ## mice samples existing values to get imputed values
     expect_equal(sort(na.omit(unique(fac))[]),
@@ -1046,6 +1046,6 @@ test_that("Imputation with a single variable",
     out <- Imputation(data.frame(x = num), method = "hot deck", m = 1)
     expect_false(anyNA(out[[1L]]))
 
-    out <- Imputation(data.frame(x = fac), method = "hot deck", m = 1)
+    out <- Imputation(data.frame(x = fac), method = "hot deck", m = 2)
     expect_false(anyNA(out[[1L]]))
 })

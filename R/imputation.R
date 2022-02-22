@@ -20,6 +20,7 @@
 #' @export
 Imputation <- function(data = NULL, formula = NULL, method = "try mice", m = 1, seed = 12321)
 {
+    method <- tolower(method)
     .errorInImputation <- function(imputed.data, formula)
     {
         if (any("try-error" %in% class(imputed.data)))
@@ -47,7 +48,7 @@ Imputation <- function(data = NULL, formula = NULL, method = "try mice", m = 1, 
             return(lapply(seq(m), function(x) temp.data))
         }
     }
-    if(method != "Hot deck")
+    if(method != "hot deck")
     {
         # CE-437: Integer and numeric columns created by calling unclass() on factors contain levels,
         # which confuses mice and causes it to crash (and display cryptic warnings).
