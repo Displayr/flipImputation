@@ -36,6 +36,9 @@ Imputation <- function(data = NULL, formula = NULL, method = "try mice", m = 1, 
     }
 
     single.var <- NCOL(data) == 1L
+    pdata <- preProcessData(data)
+    if(!anyNA(pdata))
+        return(lapply(seq(m), function(x) data))
 
     outcome.name <- if (is.null(formula)) NULL else OutcomeName(formula)
     if (!is.null(outcome.name))
@@ -50,9 +53,6 @@ Imputation <- function(data = NULL, formula = NULL, method = "try mice", m = 1, 
         }
     }
 
-    pdata <- preProcessData(data)
-    if(!anyNA(pdata))
-        return(lapply(seq(m), function(x) data))
     hot.deck.used <- FALSE
     if(method != "hot deck")
     {
