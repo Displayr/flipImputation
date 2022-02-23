@@ -1118,7 +1118,7 @@ test_that("Imputation still works if duplicate factor levels present",
     expect_equal(levels(out$z), levels(dat$z))
 })
 
-test_that("Imputation still works if duplicate factor levels present",
+test_that("Imputation works with text variables",
 {
     set.seed(3335)
     dat <- data.frame(x = rnorm(50), y = runif(50))
