@@ -15,5 +15,6 @@ Suggests:
     flipExampleData,
     testthat
 Remotes:
+    Displayr/flipExampleData,
     Displayr/flipU
 RoxygenNote: 7.1.1
