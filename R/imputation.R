@@ -54,19 +54,11 @@ Imputation <- function(data = NULL, formula = NULL, method = "try mice", m = 1, 
     }
 
     hot.deck.used <- FALSE
-    if(method != "hot deck")
+    if (method != "hot deck")
     {
         imputed.data <- suppressWarnings(try(
             {
-                # Require is used instead of Depends because using Depends
-                # implies that all downstream packages must also use Depends.
-                # This can substantially increase the load time
-                # as well as risk of conflicting names when the hierachy of
-                # dependencies is very deep
-                require("mice")
                 set.seed(seed)
-                ## dat.colnames <- colnames(data)
-                ## colnames(data) <- paste0("A", 1:ncol(data)) # need to replace names to avoid errors in mice v3.0.0
                 mice.method <- if (single.var) c("sample", "")  # else NULL
                 mice.setup <- mice(pdata, m = m, seed = seed, printFlag = FALSE,
                                    method = mice.method)
