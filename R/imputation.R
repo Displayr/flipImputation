@@ -40,6 +40,7 @@ Imputation <- function(data = NULL, formula = NULL, method = "try mice", m = 1, 
     ## bad data, but they usually throw an informative warning in these cases.
     ## Warnings from mice are logged in a data.frame called loggedEvents in the
     ## output returned by mice().
+    ## See https://stat.ethz.ch/pipermail/r-help/2010-December/262626.html
     .withWarnings <- function(expr) {
         warnings <- NULL
         wHandler <- function(w) {
