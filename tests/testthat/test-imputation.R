@@ -1140,3 +1140,15 @@ test_that("Method hot deck imputes all NA rows",
     expect_false(anyNA(out))
     expect_equal(dim(out), dim(dat))
 })
+
+test_that("DS-3981: Improve error messages",
+{
+    dat <- data.frame(x=c(1,NA,1, 1), z = c("a",NA,'b','a'),y = c("b",NA,'b', "a"))
+    expect_error(Imputation(dat, method = "mice"),
+    "Log Events:\nit = 0, im = 0, dep = , meth = constant, out = A1")
+    expect_error(Imputation(dat, method = "hot deck"),
+                 "the standard deviation is zero")
+    expect_error(Imputation(dat, method = "try mice"),
+                 "the standard deviation is zero")
+})
+

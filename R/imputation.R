@@ -35,6 +35,22 @@ Imputation <- function(data = NULL, formula = NULL, method = "try mice", m = 1, 
         FALSE
     }
 
+    ## Log warnings so they can be throw only in the event of an error
+    ## mice and hot.deck can throw uninformative error messages when given
+    ## bad data, but they usually throw an informative warning in these cases.
+    ## Warnings from mice are logged in a data.frame called loggedEvents in the
+    ## output returned by mice().
+    ## See https://stat.ethz.ch/pipermail/r-help/2010-December/262626.html
+    .withWarnings <- function(expr) {
+        warnings <- NULL
+        wHandler <- function(w) {
+            warnings <<- c(warnings, list(w))
+            invokeRestart("muffleWarning")
+        }
+        val <- withCallingHandlers(expr, warning = wHandler)
+        list(value = val, warnings = warnings)
+    }
+
     single.var <- NCOL(data) == 1L
     pdata <- preProcessData(data)
     if(!anyNA(pdata))
@@ -47,7 +63,8 @@ Imputation <- function(data = NULL, formula = NULL, method = "try mice", m = 1, 
         temp.data <- data[!is.na(temp.data[, outcome.name]), , drop = FALSE]
         if(!any(is.na(temp.data)))
         {
-            warning("Imputation has been selected, but the data has no missing values in the predictors, so nothing has been imputed.")
+            warning("Imputation has been selected, but the data has no missing ",
+                    "values in the predictors, so nothing has been imputed.")
             temp.data <- CopyAttributes(temp.data, data)
             return(lapply(seq(m), function(x) temp.data))
         }
@@ -69,18 +86,47 @@ Imputation <- function(data = NULL, formula = NULL, method = "try mice", m = 1, 
             }
         , silent = TRUE))
         if (method == "mice" && .errorInImputation(imputed.data, formula))
-            stop("Mice imputation failed.")
+        {
+            if (exists("mice.setup"))
+            {
+                .logEventStr <- function(log.events)
+                {
+                    if (is.null(log.events) || nrow(log.events) == 0)
+                        return("")
+                    out.str <- "Log Events:\n"
+                    for (i in nrow(log.events))
+                        out.str <- paste0(out.str,
+                                          paste(names(log.events), log.events[i,],
+                                                sep = " = ", collapse = ", "),
+                                          "\n")
+                    return(out.str)
+                }
+                extra.warnings <- paste0(" See ?mice::mids for interpretation of ",
+                                         "the following logged events to diagnose ",
+                                         "the issue.\n",
+                                         .logEventStr(mice.setup$loggedEvents))
+            }else
+                extra.warnings <- ""
+            stop("Mice imputation failed.", extra.warnings)
+        }
     }
-    if (method != "mice" && (method == "hot deck" || .errorInImputation(imputed.data, formula)))
+    if (method != "mice" && (method == "hot deck" ||
+                             .errorInImputation(imputed.data, formula)))
     {
         set.seed(seed)
-        imputed.data <- suppressWarnings(hot.deck(pdata, m = m)$data)
+        imputed.data <- .withWarnings(try(hot.deck(pdata, m = m), silent = TRUE))
+        warnings <- imputed.data$warnings
+        imputed.data <- imputed.data$value
+        failed <- inherits(imputed.data, "try-error")
+        if (failed || .errorInImputation(imputed.data$data, formula))
+            stop("Imputation has failed.\n",
+                 if (failed)
+                     paste0(attr(imputed.data, "condition")$message, "\n"),
+                 vapply(warnings, function(x)x$message, ""))
+        imputed.data <- imputed.data$data
         all.na.rows <- nrow(imputed.data[[1]]) != nrow(data)
         hot.deck.used <- TRUE
     }
-    if (.errorInImputation(imputed.data, formula))
-        stop("Imputation has failed.")
-
     imputation.method <- ifelse(hot.deck.used, "hot decking",
                                 "chained equations (predictive mean matching)")
     for (i in 1:m)
